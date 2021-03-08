@@ -1,4 +1,4 @@
-const request = require('request');
+const request = require("request");
 
 module.exports = (req, res) => {
   const { fwd } = req.query;
@@ -8,7 +8,9 @@ module.exports = (req, res) => {
       json: { payload: { text: JSON.stringify(req.body) } },
       headers: req.headers,
     },
-    (error, response, body) =>
-      res.status(response.statusCode).send(error ? error : body)
+    (error, response, body) => {
+      if (response) res.status(response.statusCode);
+      res.send(error ? error : body);
+    }
   );
 };
