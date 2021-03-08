@@ -38,7 +38,10 @@ module.exports = (req, res) => {
   );
 
   const formatText = text
-    ? Mustache.render(text, flatten(req.body))
+    ? Mustache.render(
+        text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
+        flatten(req.body)
+      )
     : JSON.stringify(req.body);
 
   request.post(
