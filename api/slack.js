@@ -10,7 +10,7 @@ module.exports = (req, res) => {
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
-      res.send("error ? error : body");
+      res.send(error);
     }
   );
 };
