@@ -19,16 +19,19 @@ function simpleStringify(object) {
 
 module.exports = (req, res) => {
   const { fwd } = req.query;
+  const headers = Object.fromEntries(
+    Object.entries(req.headers).filter(([k]) => k.includes("x-"))
+  );
   request.post(
     {
       url: fwd,
       json: { payload: { text: JSON.stringify(req.body) } },
-      headers: req.headers,
+      headers,
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
       res.send({
-        headers: req.headers,
+        headers,
         res: JSON.parse(simpleStringify(error ? error : body)),
       });
     }
