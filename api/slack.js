@@ -1,22 +1,16 @@
 const request = require("request");
 const Mustache = require("mustache");
 
-function simpleStringify(object) {
-  var simpleObject = {};
-  for (var prop in object) {
-    if (!object.hasOwnProperty(prop)) {
-      continue;
-    }
-    if (typeof object[prop] == "object") {
-      continue;
-    }
-    if (typeof object[prop] == "function") {
-      continue;
-    }
+const stringify = (object) => {
+  const simpleObject = {};
+  for (const prop in object) {
+    if (!object.hasOwnProperty(prop)) continue;
+    if (typeof object[prop] == "object") continue;
+    if (typeof object[prop] == "function") continue;
     simpleObject[prop] = object[prop];
   }
-  return JSON.stringify(simpleObject); // returns cleaned up JSON
-}
+  return JSON.stringify(simpleObject);
+};
 
 const flatten = (obj, roots = [], sep = "_") =>
   Object.keys(obj).reduce(
@@ -37,27 +31,28 @@ module.exports = (req, res) => {
     Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
   );
 
-  const formatText = text
-    ? Mustache.render(
-        text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
-        flatten(req.body)
-      )
-    : JSON.stringify(req.body);
-
   request.post(
     {
       url: fwd,
-      body: JSON.stringify({ type: "mrkdwn", text: formatText }).replace(
-        /\\\\n/g,
-        "\n"
-      ),
+      body: JSON.stringify({
+        text: text
+          ? Mustache.render(
+              text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
+              flatten(req.body)
+            )
+          : JSON.stringify(req.body),
+      })
+        .replace(/\\\\n/g, "\n")
+        .replace(/\\\\r/g, "\r")
+        .replace(/\\\\t/g, "\t")
+        .replace(/\\\\b/g, "\b"),
       headers,
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
       res.send({
         headers,
-        res: error ? JSON.parse(simpleStringify(error)) : body,
+        res: error ? JSON.parse(stringify(error)) : body,
       });
     }
   );
