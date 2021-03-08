@@ -25,14 +25,14 @@ module.exports = (req, res) => {
   request.post(
     {
       url: fwd,
-      json: { payload: { text: JSON.stringify(req.body) } },
+      json: { text: JSON.stringify(req.body) },
       headers,
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
       res.send({
         headers,
-        res: JSON.parse(simpleStringify(error ? error : body)),
+        res: error ? JSON.parse(simpleStringify(error)) : body,
       });
     }
   );
