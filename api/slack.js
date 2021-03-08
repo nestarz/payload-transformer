@@ -27,7 +27,7 @@ module.exports = (req, res) => {
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
-      res.send({...req.headers, ...simpleStringify(error ? error : body)});
+      res.send({ headers: req.headers, ...simpleStringify(error ? error : body) });
     }
   );
 };
