@@ -1,6 +1,8 @@
+const request = require('request');
+
 module.exports = (req, res) => {
   const { fwd } = req.query;
-  req.post(
+  request.post(
     {
       url: fwd,
       json: { payload: { text: JSON.stringify(req.body) } },
