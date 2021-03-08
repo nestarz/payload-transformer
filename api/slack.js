@@ -50,6 +50,7 @@ module.exports = (req, res) => {
     },
     (error, response, body) => {
       if (response) res.status(response.statusCode);
+      if (error) res.status(500);
       res.send({
         headers,
         res: error ? JSON.parse(stringify(error)) : body,
