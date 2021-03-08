@@ -1,4 +1,15 @@
 module.exports = (req, res) => {
-  const { name = "World" } = req.query;
-  res.status(200).send(`Hello ${name}!`);
+  const { webhook_fwd } = req.query;
+  req.post({ url: webhook_fwd, headers: req.headers });
+  request.post(
+    {
+      url: webhook_fwd,
+      json: { payload: { text: JSON.stringify(req.body) } },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+    (error, response, body) =>
+      res.status(response.statusCode).send(error ? error : body)
+  );
 };
