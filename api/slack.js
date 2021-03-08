@@ -41,13 +41,16 @@ module.exports = (req, res) => {
     ? Mustache.render(
         text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
         flatten(req.body)
-      ).replace(/\\\\n/g, "\n")
+      )
     : JSON.stringify(req.body);
 
   request.post(
     {
       url: fwd,
-      json: { type: "mrkdwn", text: formatText },
+      body: JSON.stringify({ type: "mrkdwn", text: formatText }).replace(
+        /\\\\n/g,
+        "\n"
+      ),
       headers,
     },
     (error, response, body) => {
