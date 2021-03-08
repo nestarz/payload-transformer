@@ -1,8 +1,8 @@
 module.exports = (req, res) => {
-  const { webhook_fwd } = req.query;
+  const { fwd } = req.query;
   req.post(
     {
-      url: webhook_fwd,
+      url: fwd,
       json: { payload: { text: JSON.stringify(req.body) } },
       headers: req.headers,
     },
