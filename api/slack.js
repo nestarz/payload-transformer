@@ -1,4 +1,5 @@
 const request = require("request");
+const Mustache = require("mustache");
 
 function simpleStringify(object) {
   var simpleObject = {};
@@ -17,15 +18,33 @@ function simpleStringify(object) {
   return JSON.stringify(simpleObject); // returns cleaned up JSON
 }
 
-module.exports = (req, res) => {
-  const { fwd } = req.query;
-  const headers = Object.fromEntries(
-    Object.entries(req.headers).filter(([k]) => k.includes("x-"))
+const flatten = (obj, roots = [], sep = "_") =>
+  Object.keys(obj).reduce(
+    (memo, prop) =>
+      Object.assign(
+        {},
+        memo,
+        Object.prototype.toString.call(obj[prop]) === "[object Object]"
+          ? flatten(obj[prop], roots.concat([prop]))
+          : { [roots.concat([prop]).join(sep)]: obj[prop] }
+      ),
+    {}
   );
+
+module.exports = (req, res) => {
+  const { fwd, text } = req.query;
+  const headers = Object.fromEntries(
+    Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
+  );
+
+  const formatText = text
+    ? Mustache.render(text, flatten(req.body))
+    : JSON.stringify(req.body);
+
   request.post(
     {
       url: fwd,
-      json: { text: JSON.stringify(req.body) },
+      json: { text: formatText },
       headers,
     },
     (error, response, body) => {

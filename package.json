@@ -6,6 +6,7 @@
   "author": "Elias Rhouzlane <elias.rhouzlane@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "mustache": "^4.1.0",
     "request": "^2.88.2"
   }
 }
