@@ -5,12 +5,15 @@ const { stringify, flatten } = require("./utils.js");
 module.exports = (req, res) => {
   const { fwd, text, ...props } = req.query;
 
-  const ignore = Object.entries(props).some(([key1, value1]) =>
-    Object.entries(flatten(req.body)).some(
-      ([key2, value2]) =>
-        String(key1).split("_ncontains")[0] === key2 && value1.includes(value2)
-    )
-  );
+  const ignore = Object.entries(props)
+    .filter(([key]) => key.includes("_ncontains"))
+    .some(([key1, value1]) =>
+      Object.entries(flatten(req.body)).some(
+        ([key2, value2]) =>
+          String(key1).split("_ncontains")[0] === key2 && value1.includes(value2)
+      )
+    );
+
 
   if (ignore) {
     res.send({ ignore: true });
