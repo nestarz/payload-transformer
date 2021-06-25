@@ -3,7 +3,19 @@ const Mustache = require("mustache");
 const { stringify, flatten } = require("./utils.js");
 
 module.exports = (req, res) => {
-  const { fwd, text } = req.query;
+  const { fwd, text, ...props } = req.query;
+
+  const ignore = Object.entries(props).some(([key1, value1]) =>
+    Object.entries(
+      flatten(req.body).some(
+        ([key2, value2]) =>
+          String(key1).split("_ncontains")[0] === key2 && value1.includes(value2)
+      )
+    )
+  );
+
+  if (ignore) return res.status(200);
+
   const headers = Object.fromEntries(
     Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
   );
