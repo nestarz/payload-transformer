@@ -10,7 +10,7 @@ module.exports = (req, res) => {
     .some(([key1, value1]) =>
       Object.entries(flatten(req.body)).some(
         ([key2, value2]) =>
-          String(key1).split("_ncontains")[0] === key2 && value1.includes(value2)
+          String(key1).split("_ncontains")[0] === key2 && value2.includes(value1)
       )
     );
 
