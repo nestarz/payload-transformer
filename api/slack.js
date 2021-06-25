@@ -14,7 +14,11 @@ module.exports = (req, res) => {
     )
   );
 
-  if (ignore) return res.status(200);
+  if (ignore) {
+    res.send({ ignore: true });
+    res.status(200);
+    return;
+  }
 
   const headers = Object.fromEntries(
     Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
