@@ -3,7 +3,7 @@ const Mustache = require("mustache");
 const { stringify, flatten } = require("./utils.js");
 
 module.exports = (req, res) => {
-  const { fwd, text, body, ...props } = req.query;
+  const { fwd, text, body, keep_headers = false, ...props } = req.query;
 
   const ignore = Object.entries(props)
     .filter(([key]) => key.includes("_ncontains"))
@@ -21,7 +21,7 @@ module.exports = (req, res) => {
     return;
   }
 
-  const headers = Object.fromEntries(
+  const headers = keep_headers ? req.headers : Object.fromEntries(
     Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
   );
 
