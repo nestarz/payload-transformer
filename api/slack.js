@@ -3,7 +3,7 @@ const Mustache = require("mustache");
 const { stringify, flatten } = require("./utils.js");
 
 module.exports = (req, res) => {
-  const { fwd, text, ...props } = req.query;
+  const { fwd, text, body, ...props } = req.query;
 
   const ignore = Object.entries(props)
     .filter(([key]) => key.includes("_ncontains"))
@@ -34,7 +34,7 @@ module.exports = (req, res) => {
               text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
               flatten(req.body)
             )
-          : JSON.stringify(req.body),
+          : body ? body : JSON.stringify(req.body),
       })
         .replace(/\\\\n/g, "\n")
         .replace(/\\\\r/g, "\r")
