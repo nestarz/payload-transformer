@@ -28,13 +28,13 @@ module.exports = (req, res) => {
   request.post(
     {
       url: fwd,
-      body: JSON.stringify({
+      body: body ? body : JSON.stringify({
         text: text
           ? Mustache.render(
               text.replace(/\\{/g, "{").replace(/\\}/g, "}"),
               flatten(req.body)
             )
-          : body ? body : JSON.stringify(req.body),
+          : JSON.stringify(req.body),
       })
         .replace(/\\\\n/g, "\n")
         .replace(/\\\\r/g, "\r")
