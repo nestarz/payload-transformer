@@ -22,7 +22,7 @@ module.exports = (req, res) => {
   }
 
   const headers = keep_headers ? req.headers : Object.fromEntries(
-    Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded"))
+    Object.entries(req.headers).filter(([k]) => k.includes("x-forwarded") || k.includes("stellate-token"))
   );
 
   request.post(
